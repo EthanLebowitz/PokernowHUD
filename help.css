@@ -1,0 +1,20 @@
+body{
+    width: 100%;
+}
+h2{
+    font-size: 190%;
+}
+h3{
+    font-size: 140%;
+}
+#textContainer{
+    width: 60%;
+    margin: 0 auto;
+}
+p{
+    font-size: 140%;
+    width: 100%;
+}
+li{
+    font-size: 130%;
+}

@@ -1,0 +1,26 @@
+{
+	"manifest_version": 2,
+	"name": "Pokernow HUD",
+	"version": "0.9.1",
+	"permissions": ["storage"],
+	"content_security_policy": "default-src 'self',
+	"background": {
+      "scripts": ["background.js"],
+      "persistent": false
+    },
+	
+	"icons": { "16": "images/icon16.png",
+           "48": "images/icon48.png",
+          "128": "images/icon128.png" },
+
+	"content_scripts": [
+		{
+			"matches": ["https://www.pokernow.club/games/*"],
+			"js": ["thirdParty/jquery.min.js", "content.js"]
+		}
+	],
+	
+	"browser_action": {
+		"default_popup": "popup.html"
+	}
+}

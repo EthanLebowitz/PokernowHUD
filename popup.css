@@ -1,0 +1,149 @@
+.container {
+	height: 115px;
+	position: relative;
+	margin: 25px 0px;
+}
+
+.center {
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+}
+
+body{
+	width: 330px;
+}
+#restore, #addStats {
+	opacity: 0;
+	position: absolute;
+	z-index: -1;
+}
+.dataButtons {
+	cursor: pointer;
+	background-color: #e0e0e0;
+	color: black;
+	padding: 10px 30px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+}
+
+.dataButtons:hover, .dataButtons:active, .dataButtons:focus {
+	background-color: #3e945c;
+	color:  white;
+	outline: 0;
+	border: none;
+	-moz-outline-style: none;
+}
+
+#clearStats:hover, #clearStats:active, #clearStats:focus, #clearHistory:hover, #clearHistory:active, #clearHistory:focus{
+	background-color: #961414;
+	outline: 0;
+	border: none;
+	-moz-outline-style: none;
+	color: white;
+}
+#sortable1, #sortable2, #sortable3{
+	border: 3px solid #eee;
+	width: 300px; 
+	height: 35px;
+	list-style-type: none;
+	margin: 2px 10px 2px 10px;
+	padding: 0px 0 0 0;
+	margin-right: 0px;
+}
+#sortable1 li, #sortable2 li, #sortable3 li{
+	font-size: 1em;
+	margin: 4px 3px 3px 3px; 
+	padding: 6px; 
+	float: left; 
+	border: 0px solid #23545c;
+	border-radius: 5px;
+	width: auto; 
+	height: 15px; 
+	background: #23545c;
+	color: white;
+}
+#sortableBin { 
+	border: 3px solid #eee;
+	list-style-type: none; 
+	margin: 10px; 
+	padding: 0px; 
+	width: 300px; 
+	min-height: 100px;
+}
+#sortableBin li { 
+	margin: 3px 3px 3px 3px; 
+	padding: 6px; 
+	float: left; 
+	border: 0px solid #23545c;
+	border-radius: 5px;
+	width: auto; 
+	height: 15px; 
+	font-size: 1em; 
+	text-align: center;
+	background: #23545c;
+	color: white;
+}
+
+.tabs{
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	height: 44px;
+}
+
+.tabs li{
+	float: left;
+	list-style-type: none;
+
+}
+
+.tab {
+	background-color: #9c9c9c;
+	color: white;
+	padding: 14px 69px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	z-index: 1;
+	position: relative;
+	font-size: 12px;
+}
+
+.tab:hover, .tab:active, .tab:focus {
+	background-color: #338ede;
+	outline: 0;
+	border: none;
+	-moz-outline-style: none;
+}
+
+.selected{
+	background-color: #338ede;
+}
+
+.statLabels {
+	padding: 6px;
+	cursor: pointer;
+    font-size: 13px;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+#restoreDiv, #addDiv, #backupDiv{
+	margin: 120px 0 0 0; 
+	z-index: -1;
+}
+
+.dataActionButtons{
+	margin: 0 0 10px 0;
+}
+
+.statBrick{
+	display: none;
+}
+
+
+

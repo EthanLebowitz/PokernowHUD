@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="popup.css">
+	</head>
+	<body>
+	<div id="tabs">
+  <ul class = "tabs">
+    <li><a href="#tabs-1" class="tab selected">Panel</a></li>
+    <li><a href="#tabs-2" class="tab">Data</a></li>
+  </ul>
+  <div id="tabs-1">
+	<br>
+		Panel: &nbsp &nbsp [
+		<input type="checkbox" id="showingHUDBox" class="show" checked>
+		<label for="showingHUDBox" class="show">Show HUD</label> ] 
+        [ <a href="help.html" target="_blank">Help</a> ]
+		<div> 
+			<ul id="sortable1" class="connectedSortable">
+			  
+			</ul>
+		</div><div>
+			<ul id="sortable2" class="connectedSortable">
+			</ul>
+		</div><div>
+			<ul id="sortable3" class="connectedSortable">
+			</ul>
+		</div>
+		Unused Stats: &nbsp;	&nbsp; <button id="recall" align="right">Recall</button>
+		<div>
+			<ul id="sortableBin" class="connectedSortable">
+			  
+			</ul>
+		</div>
+  </div>
+  <div id="tabs-2"><br>
+    <div class="container">
+			<div class="center" id="buttonsTab">
+				<div id="buttonsDiv">
+					<table><tr><td>
+					<a id="backup" class="dataButtons">Backup Stats</button>
+					</td><td>
+					<a id="restoreStats" class="dataButtons">Restore Stats</a>
+					</td><tr><td>
+					<a id="clearStats" class="dataButtons">Clear Stats</button>
+					</td><td>
+					<a id="add" class="dataButtons">Add Stats</a>
+					</td></tr></table>
+					<input type="checkbox" id="recordBox" checked>
+					<label class="label" for="recordBox">Record Hand Histories</label>
+					<table><tr><td>
+					<a id="clearHistory" class="dataButtons">Clear History</button>
+					</td><td>
+					<a id="handHistory" class="dataButtons">Hand History</a>
+					</td></tr></table>
+				</div>
+				<div id="restoreDiv">
+					<p>Enter backup data here to restore it (you may need to refresh donkhouse):</p>
+					<textarea id="restoreBox" rows="10" cols="30"></textarea>
+					<div class="dataActionButtons">
+					<button type="button" id="restoreButton">Restore</button>
+					<button type="button" class="cancel" id="cancel1">Cancel</button>
+					</div>
+				</div>
+				<div id="addDiv">
+					<p>Enter backup data here to add it to your current data (this only works if your current tab is a donkhouse table):</p>
+					<textarea id="addBox" rows="10" cols="30"></textarea>
+					<div class="dataActionButtons">
+					<button type="button" id="addButton">Add</button>
+					<button type="button" class="cancel" id="cancel2">Cancel</button>
+					</div>
+				</div>
+				<div id="backupDiv">
+					<p>Copy this data somewhere safe:</p>
+					<textarea readonly id="backupBox" rows="10" cols="30"></textarea>
+					<div class="dataActionButtons">
+					<button type="button" id="copyButton">Copy</button>
+					<button type="button" class="cancel" id="cancel3">Done</button>
+					</div>
+				</div>
+			</div>
+		</div>
+  </div>
+</div>
+		
+		<br>
+		
+		<script src="thirdParty/jquery.min.js"></script>
+		<script src="thirdParty/jquery-ui.min.js"></script>
+		<script src="popup.js"></script>
+	</body>
+</html>

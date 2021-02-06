@@ -1,0 +1,60 @@
+<head>
+    <title>HUD Help Page</title>
+    <link rel="stylesheet" href="help.css">
+</head>
+<body>
+    <div id="textContainer">
+    <h2>HUD Help Page</h2>
+    
+    <h3>
+        If you find this extension useful please consider donating to the project:
+    </h3>
+    <ul><li>
+            PayPal: <a href="https://paypal.me/UnrealDuck?locale.x=en_US">https://paypal.me/UnrealDuck</a> 
+        </li><li>
+            Bitcoin: 1Gy8GQhvDBka6Sx1DwFPo1bh9Bs6gbZEEB
+        </li>
+    </ul><h3>
+        Stat Definitions:
+    </h3>
+    <ul>
+        <li>H (hands): # of hands logged for user (sample size).</li><li>
+        VPIP (Voluntarily Put In Pot): % of hands player has bet, raised or called preflop (does not include blinds because blinds are not voluntary).</li><li>
+        PFR (Pre-Flop Raise): % of hands player has raised preflop.</li><li>
+        AF (Aggression Factor): Unitless post-flop stat defined as (Bets + Raises) / Calls.</li><li>
+        CB (Continuation Bet): % of hands player continuation bets the flop out of the hands player was the pre-flop aggressor.</li><li>
+        2B (Double Barrel): % of hands player double barrels on the turn out of the hands player Continuation Bet.</li><li>
+        3Ba (Triple Barrel): % of hands player triple barrels on the river out of the hands player double barreled.   </li><li>
+        3B (3 Bet): % of hands player 3 bet pre-flop.</li><li>
+        4B (4 Bet): % of hands player 4 bet pre-flop.</li><li>
+        FC (Fold to Continuation bet): % of hands player has folded when facing a continuation bet.</li><li>
+        F2B (Fold to Double Barrel): % of hands player has folded when facing a double barrel.</li><li>
+        F3Ba (Fold to Triple Barrel): % of hands player has folded when facing a triple barrel.</li><li>
+        F3 (Fold to 3 bet): % of hands player has folded facing a 3 bet preflop.</li><li>
+        WTSD (Went To Show Down): % of hands that player has gone to showdown with after seeing the flop.</li>
+    </ul>
+    <p>
+        By clicking a stat tile in the popup window it will toggle the label for the stat. So clicking [VPIP] will change it into [L:VPIP] and show "/VPIP: 12.3/" instead of "/ 12.3 /" on the overlay. 
+    </p>
+    <h3>Stat Categories:</h3>
+    <p>
+        Note that stats for each user are separated into three categories:
+    </p>
+    <ul>
+        <li>
+            Heads Up (2 players)
+        </li><li>
+            Short Handed (3-6 players)
+        </li><li>
+            Full Ring (7+ players)
+        </li>
+    </ul>
+    <p>
+        For example, if I am playing short handed then only stats from hands that were also short handed will be shown.
+    </p>
+    <h3>Contact:</h3>
+    <p>
+        Please send questions, bug reports, and words of encouragement to duckunreal@gmail.com. 
+    </p>
+    </div>
+</body>
