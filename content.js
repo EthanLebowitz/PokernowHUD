@@ -528,7 +528,7 @@ class HandBuilder{ //gets called by execute()
             //translate raises
             if(line.includes("raises to")){
                 var raiseSize = line.split("raises to ")[1];
-                translatedHandLines.push(player+" raised to "+blindSize);
+                translatedHandLines.push(player+" raised to "+raiseSize);
             }
             //translate folds
             if(line.includes("\" folds")){
@@ -543,6 +543,11 @@ class HandBuilder{ //gets called by execute()
             if(line.includes(" calls ")){
                 var callSize = line.split(" calls ")[1];
                 translatedHandLines.push(player+" called "+callSize);
+            }
+            //translate bets
+            if(line.includes(" bets ")){
+                var betSize = line.split(" bets ")[1];
+                translatedHandLines.push(player+" bet "+betSize);
             }
             //translate showdowns
             if(line.includes(" shows a ")){

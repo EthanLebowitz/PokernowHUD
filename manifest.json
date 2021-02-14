@@ -3,10 +3,10 @@
 	"name": "Pokernow HUD",
 	"version": "0.9.1",
 	"permissions": ["storage"],
-	"content_security_policy": "default-src 'self',
+	"content_security_policy": "default-src 'self'",
 	"background": {
-      "scripts": ["background.js"],
-      "persistent": false
+        "scripts": ["background.js"],
+        "persistent": false
     },
 	
 	"icons": { "16": "images/icon16.png",
