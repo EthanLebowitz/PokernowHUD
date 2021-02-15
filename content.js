@@ -275,7 +275,7 @@ class HUD { //class for hud graphical overlay. gets made by
 		var loaded = await new Promise(function(resolve, reject){
 			console.log("checking");
 			var youLoaded = false;
-            var userDiv = document.getElementsByClassName("you-player")[0];
+            var userDiv = document.getElementsByClassName("table-player-name")[0];
             if(! (userDiv == null)){youLoaded = true;}
 			console.log(youLoaded);
 			
@@ -368,15 +368,18 @@ class HUD { //class for hud graphical overlay. gets made by
         var playerDivs = document.getElementsByClassName("table-player");
         
         for(var i=0; i<playerDivs.length; i++){
-            var nameDiv = playerDivs[i].getElementsByClassName("table-player-name")[0];
-            var name = nameDiv.innerHTML;
-            var styles = window.getComputedStyle(playerDivs[i]);
-            var x = styles.getPropertyValue("left");
-            var y = styles.getPropertyValue("top");
-            var height = styles.getPropertyValue("height");
-            var fontSize = window.getComputedStyle(nameDiv).getPropertyValue("font-size");
-            //console.log(x);
-            players.push(new Player(name, x, y, height, fontSize, i));
+            var currentPlayer = playerDivs[i];
+            if( ! currentPlayer.classList.contains("table-player-seat") ){
+                var nameDiv = currentPlayer.getElementsByClassName("table-player-name")[0];
+                var name = nameDiv.innerHTML.replaceAll(" ", "__");
+                var styles = window.getComputedStyle(playerDivs[i]);
+                var x = styles.getPropertyValue("left");
+                var y = styles.getPropertyValue("top");
+                var height = styles.getPropertyValue("height");
+                var fontSize = window.getComputedStyle(nameDiv).getPropertyValue("font-size");
+                //console.log(x);
+                players.push(new Player(name, x, y, height, fontSize, i));
+            }
         }
 
 		return players;
@@ -407,15 +410,15 @@ class HandBuilder{ //gets called by execute()
 	
 	getYou(){  //gets users username from a spot in the code. May need changing if code changes
 		
-        var userDiv = document.getElementsByClassName("you-player")[0];
+        /* var userDiv = document.getElementsByClassName("you-player")[0];
         var nameDiv = userDiv.getElementsByClassName("table-player-name")[0];
         
         var name = nameDiv.innerHTML;
         
 		this.you = name;
-		this.aggregator.setYou(name);
+		this.aggregator.setYou(name); */
         
-		return name;
+		return "None";
 		
 	}
 	
@@ -434,7 +437,7 @@ class HandBuilder{ //gets called by execute()
 			var lastLine = lastHand[i];
 			if(!(lastLine == previousLastLine)){
 				var lineWords = lastLine.split(" ");
-				if(lineWords[0] === "you"){lastLine = lastLine.replace("you", this.you);} //translate you to username of user
+				//if(lineWords[0] === "you"){lastLine = lastLine.replace("you", this.you);} //translate you to username of user
 				//this.currentHandForLogging.push(lastLine);
 				if(lastLine.includes("timed out")){lastLine = lastLine.replace("timed out and ", "");} //removing "timed out and " leaves only the username and "folded". translates to a basic folded message
 				if(lastLine.includes("were dealt")){this.dealtLine = lastLine; console.log(lastLine);} //could be useful later
@@ -475,6 +478,18 @@ class HandBuilder{ //gets called by execute()
         return positionName;
 	}
     
+    removeNameSpaces(line){
+        if(line.includes("@")){ //&& (line.split(" ").length - line.split(" ").findIndex(word => word === "@")) > 2){ //if the player name is at the beginning and not at the end
+            var player = line.split("\"")[1].split("@")[0];
+            player = player.substring(0,player.length-1);//cut off trailing space
+            //console.log(player);
+            var spacelessPlayer = player.replaceAll(" ", "__"); //two underscores.
+            line = line.replace(player, spacelessPlayer); //this is to deal with players with spaces in there names
+            //console.log(player);
+        }
+        return line;
+    }
+    
     convertToDonkhouseFormat(handLines){
         
         var translatedHandLines = [];
@@ -486,14 +501,15 @@ class HandBuilder{ //gets called by execute()
             
             var line = handLines[i];
             
+            line = this.removeNameSpaces(line);
             var player = line.split(" ")[0].split("\"")[1];
             
             if(line.includes("starting hand")){
                 dealer = line.split("dealer: ")[1].split(" ")[0].split("\"")[1];
             }
             //translate dealt line
-            if(line.includes("your hand is")){
-                var hand = line.replace("your hand is ", "").replace(",", "");
+            if(line.includes("Your hand is")){
+                var hand = line.replace("Your hand is ", "").replace(",", "");
                 translatedHandLines.push("you were dealt "+hand);
             }
             //translate stack lines
@@ -501,8 +517,10 @@ class HandBuilder{ //gets called by execute()
                 var stackLines = line.replace("Player stacks: ", "").split(" | ");
                 var translatedStackLines = [];
                 for(var j=0; j<stackLines.length; j++){
-                    player = stackLines[j].split(" ")[1].split("\"")[1];
-                    var stack = stackLines[j].split("(")[1].replace(")", "");
+                    var stackLine = stackLines[j];
+                    stackLine = this.removeNameSpaces(stackLine);
+                    player = stackLine.split(" ")[1].split("\"")[1];
+                    var stack = stackLine.split("(")[1].replace(")", "");
                     translatedStackLines.push(player+" ("+stack+", "+"[position]"+")");
                 }
                     console.log(translatedStackLines);
@@ -536,7 +554,7 @@ class HandBuilder{ //gets called by execute()
             }
             //translate boards
             if(line.includes("Flop: ") || line.includes("Turn: ") || line.includes("River: ")){
-                var strippedBoard = line.replace("Flop: ", "").replace("Turn: ", "").replace("River: ", "").replace("[").replace("]");
+                var strippedBoard = line.replace("Flop:  ", "").replace("Turn: ", "").replace("River: ", "").replace("[", "").replace("]", "").replaceAll(",", "").replace("Flop: ", ""); //last replace statement is in case they ever remove the wierd two spaces after flop in the log
                 translatedHandLines.push("board: "+strippedBoard);
             }
             //translate calls
@@ -551,7 +569,7 @@ class HandBuilder{ //gets called by execute()
             }
             //translate showdowns
             if(line.includes(" shows a ")){
-                var hand = line.split(" shows a ")[1].replace(",", "");
+                var hand = line.split(" shows a ")[1].replace(",", "").replace(".","");
                 translatedHandLines.push(player+" showed "+hand);
             }
             
