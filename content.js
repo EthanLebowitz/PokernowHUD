@@ -577,6 +577,10 @@ class HandBuilder{ //gets called by execute()
                 var wonAmount = line.split(" collected ")[1].split(" ")[0];
                 translatedHandLines.push(player+" won "+wonAmount)+" chips";
             }
+            //translate checks
+            if(line.includes(" checks")){
+                translatedHandLines.push(player+" checked");
+            }
             
         }
         
