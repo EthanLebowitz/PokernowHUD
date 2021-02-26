@@ -505,7 +505,12 @@ class HandBuilder{ //gets called by execute()
             var player = line.split(" ")[0].split("\"")[1];
             
             if(line.includes("starting hand")){
-                dealer = line.split("dealer: ")[1].split(" ")[0].split("\"")[1];
+                if(line.includes("dead button")){
+                    dealer = "dead button";
+                }
+                else{
+                    dealer = line.split("dealer: ")[1].split(" ")[0].split("\"")[1];
+                }
             }
             //translate dealt line
             if(line.includes("Your hand is")){
