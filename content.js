@@ -258,7 +258,7 @@ class HUD { //class for hud graphical overlay. gets made by
 				getStats(this.aggregator); //every update of the HUD retrieve stats from memory and store them in the aggregator stats variable
 				this.initializeHUD();
 			}else{this.clearDisplay();}
-            if(iteration % 3 == 0){ //only request logs every second and a half
+            if(iteration % 8 == 0){ //only request logs every 4 seconds
                 scraper.getLog();
             }
             this.HUDloop(iteration+1);
@@ -529,12 +529,14 @@ class HandBuilder{ //gets called by execute()
                     translatedStackLines.push(player+" ("+stack+", "+"[position]"+")");
                 }
                     console.log(translatedStackLines);
-                while(! (translatedStackLines[translatedStackLines.length-1].split(" ")[0] === dealer)){ //if the last guy isn't the dealer shift until they are
-                    //console.log(dealer);
-                    //console.log(translatedStackLines[translatedStackLines.length-1].split(" ")[0]);
-                    var firstElement = translatedStackLines[0];
-                    translatedStackLines.shift();
-                    translatedStackLines.push(firstElement);
+                if(! dealer === "dead button"){ //quick fix for infinite loop caused by dead button. Not sure yet if this will cause other problems. Will definitely mess up hand history for that hand.
+                    while(! (translatedStackLines[translatedStackLines.length-1].split(" ")[0] === dealer)){ //if the last guy isn't the dealer shift until they are
+                        //console.log(dealer);
+                        //console.log(translatedStackLines[translatedStackLines.length-1].split(" ")[0]);
+                        var firstElement = translatedStackLines[0];
+                        translatedStackLines.shift();
+                        translatedStackLines.push(firstElement);
+                    }
                 }
                     //console.log(translatedStackLines);
                 for(var j=0; j<translatedStackLines.length; j++){
@@ -621,7 +623,7 @@ class HandBuilder{ //gets called by execute()
 			if( line.includes("ending hand #") ){ //once we get out of the stack lines
 				handEnd = i;
 			}
-            if( line.includes("starting hand #") ){
+            if( ( handEnd != undefined ) && line.includes("starting hand #") ){ //check if handEnd is already set, otherwise we run the risk of just pulling out a partial currently running hand instead of the last complete hand
                 handStart = i;
                 break;
             }
