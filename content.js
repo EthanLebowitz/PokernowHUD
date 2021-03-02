@@ -1130,7 +1130,11 @@ class LogScraper{
     }
 
     processLog(text, self){
-        var jsonLog = JSON.parse(text);
+        if(Object.prototype.toString.call(text) === "[object String]"){
+            var jsonLog = JSON.parse(text);
+        }else if(Object.prototype.toString.call(x) === "[object Object]"){ //it looks like for some people the log might get returned as an object and not a string.
+            var jsonLog = text;
+        }
         
         for(var i = 10; i >= 0; i--){ //we can probably drop the starting value of i way down
             var message = jsonLog.logs[i].msg;
