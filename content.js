@@ -255,12 +255,12 @@ class HUD { //class for hud graphical overlay. gets made by
 		
 		this.sleep(500).then(() => {
 			if(this.settings.checkIfShowingHUD()){
-				getStats(this.aggregator); //every update of the HUD retrieve stats from memory and store them in the aggregator stats variable
 				this.initializeHUD();
 			}else{this.clearDisplay();}
             if(iteration % 8 == 0){ //only request logs every 4 seconds
                 scraper.getLog();
             }
+			getStats(this.aggregator); //every update of the HUD retrieve stats from memory and store them in the aggregator stats variable
             this.HUDloop(iteration+1);
 		})
 		
