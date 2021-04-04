@@ -201,7 +201,7 @@ class Panel { //gets made by HUD
 	getXOffset(div){
 		
 		var offset = this.settings.getPanelOffset();
-		return -offset[0] //flip sign
+		return offset[0] 
 		
 	}
 	
@@ -209,7 +209,7 @@ class Panel { //gets made by HUD
 		
 		var offset = this.settings.getPanelOffset();
 		//console.log(offset[1])
-		return -offset[1]
+		return -offset[1] //flip sign
 		
 	}
 	
