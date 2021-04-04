@@ -4,6 +4,10 @@
 	margin: 25px 0px;
 }
 
+.offsetBox {
+	width: 80px;
+}
+
 .center {
 	margin: 0;
 	position: absolute;

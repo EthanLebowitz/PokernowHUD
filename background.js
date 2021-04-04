@@ -20,7 +20,7 @@ chrome.runtime.onInstalled.addListener(function() {
 			}); 
 		}
     }); 	
-	chrome.storage.local.set({"settings": {"panelSettings":[["nH", "nVPIP", "nPFR", "nAF"],[],[],["lCB", "l2B", "l3Ba", "l3B", "l4B", "lFC", "lF2B", "lF3B", "lF3", "lWTSD"]], "recordBox": true, "showingHUD": true}}, function() { //initialize settings storage
+	chrome.storage.local.set({"settings": {"panelSettings":[["nH", "nVPIP", "nPFR", "nAF"],[],[],["lCB", "l2B", "l3Ba", "l3B", "l4B", "lFC", "lF2B", "lF3B", "lF3", "lWTSD"]], "recordBox": true, "showingHUD": true, "panelOffset":[0,0]}}, function() { //initialize settings storage
 		console.log("created stats dict");
     });
 	/* chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {

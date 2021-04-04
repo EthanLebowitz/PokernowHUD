@@ -46,6 +46,7 @@ class Settings {
 		this.statsToShow = [];
 		this.recordBox = true;
 		this.showingHUD = true;
+		this.panelOffset = this.getPanelOffset();
 		chrome.storage.local.get(['settings'], function(result) {
 			console.log('Value currently is ' + result.settings);
 			//self.setStatsToShow(result.settings.stats);
@@ -73,6 +74,16 @@ class Settings {
 			self.showingHUD = result.settings.showingHUD;
 		});
 		return this.showingHUD;
+		
+	}
+	
+	getPanelOffset(){
+		
+		var self = this;
+		chrome.storage.local.get(['settings'], function(result) {
+			self.panelOffset = result.settings.panelOffset;
+		});
+		return this.panelOffset;
 		
 	}
 	
@@ -187,15 +198,33 @@ class Panel { //gets made by HUD
 	
 	}
 	
+	getXOffset(div){
+		
+		var offset = this.settings.getPanelOffset();
+		return -offset[0] //flip sign
+		
+	}
+	
+	getYOffset(div){
+		
+		var offset = this.settings.getPanelOffset();
+		//console.log(offset[1])
+		return -offset[1]
+		
+	}
+	
 	addCoordinates(player, div){
 		
 		var x = parseFloat(player.x.replace("px", ""));
 		var y = parseFloat(player.y.replace("px", ""));
         var yShift = 0.75*parseFloat(player.height.replace("px", ""));
+		yShift += this.getYOffset();
+		console.log(yShift);
+		var xShift = this.getXOffset();
 		
 		div.style.position = "absolute";
 		div.style.top = String(y+yShift)+"px";
-		div.style.left = String(x)+"px";
+		div.style.left = String(x+xShift)+"px";
         div.style.zIndex = "99";
         //console.log(y);
 		

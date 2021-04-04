@@ -111,7 +111,7 @@ class PanelTab { //im including the checkbox on the data tab cause im too lazy t
 		
 	}
 
-	extractPanelSettings(){ //generates panelSettingsList from html. may not be needed. pretty messy function. could use reworking
+	extractPanelSettings(){ //generates panelSettingsList from html. pretty messy function. could use reworking
 		
 		var panelLists = []; //last one is the bin of unused
 		for(var i=0; i<this.lists.length; i++){ //for each line
@@ -160,6 +160,7 @@ class Main {
 		
 		this.watchRecordCheckbox();
 		this.watchHUDCheckbox();
+		this.watchSetOffsets();
 
 		$('body').on('DOMSubtreeModified', '#tabs-1', function(){
 			console.log(document.getElementById("tabs-1"));
@@ -184,6 +185,18 @@ class Main {
 		
 	}
 	
+	watchSetOffsets(){
+		
+		var self = this;
+		var setOffsetButton = document.getElementById("setOffsetButton");
+		setOffsetButton.addEventListener('click', function() {
+			console.log("offset!");
+			self.saveState();
+			//self.updateOffset();
+		});
+		
+	}
+	
 	watchHUDCheckbox(){
 		
 		var self = this;
@@ -191,7 +204,7 @@ class Main {
 		showHUD.addEventListener('change', function() {
 			console.log("show");
 			self.saveState();
-			self.updateShow();
+			//self.updateShow();
 		});
 		
 	}
@@ -199,6 +212,14 @@ class Main {
 	updateRecord(settings){
 		
 		chrome.runtime.sendMessage({"record": settings.recordBox, "command": "updateRecord"}, function(response) {
+			console.log(response.confirmation);
+		});
+		
+	}
+	
+	updateOffset(settings){
+		
+		chrome.runtime.sendMessage({"panelOffset": settings.panelOffset, "command": "updateOffset"}, function(response) {
 			console.log(response.confirmation);
 		});
 		
@@ -222,6 +243,7 @@ class Main {
 			self.settings = result.settings;
 			self.restoreRecordBox(result.settings.recordBox);
 			self.restoreShowBox(result.settings.showingHUD);
+			self.restorePanelOffsetBoxes(result.settings.panelOffset);
 			self.loadComplete = self.panelTab.restorePanelSettings(panelSettings);
 			console.log('Value currently is ' + result.key);
 		});
@@ -236,10 +258,16 @@ class Main {
 		document.getElementById("recordBox").checked = state;
 	}
 	
+	restorePanelOffsetBoxes(state){
+		console.log(state);
+		document.getElementById("xOffsetBox").value = state[0];
+		document.getElementById("yOffsetBox").value = state[1];
+	}
+	
 	packSettings(){ //pack settings for storage
 		
 		var settings = {};
-		var panelSettings = this.panelTab.extractPanelSettings();
+		var panelSettings = this.panelTab.extractPanelSettings(); //this just extracts the stat tile info
 		console.log(1);
 		console.log(panelSettings);
 		if(this.panelTab.isStableState(panelSettings)){
@@ -250,6 +278,9 @@ class Main {
 		console.log(document.getElementById("recordBox").checked);
 		settings["recordBox"] = document.getElementById("recordBox").checked;
 		settings["showingHUD"] = document.getElementById("showingHUDBox").checked;
+		var yOffset = parseInt(document.getElementById("yOffsetBox").value);
+		var xOffset = parseInt(document.getElementById("xOffsetBox").value);
+		settings["panelOffset"] = [xOffset,yOffset];
 		console.log(settings);
 		return settings;
 		
