@@ -219,7 +219,6 @@ class Panel { //gets made by HUD
 		var y = parseFloat(player.y.replace("px", ""));
         var yShift = 0.75*parseFloat(player.height.replace("px", ""));
 		yShift += this.getYOffset();
-		console.log(yShift);
 		var xShift = this.getXOffset();
 		
 		div.style.position = "absolute";
@@ -246,13 +245,15 @@ class Panel { //gets made by HUD
 class HUD { //class for hud graphical overlay. gets made by 
 	
 	constructor(aggregator, settings, builder){
-		this.settings = settings
+		this.settings = settings;
+		this.iteration = 0;
 		this.aggregator = aggregator;
 		this.playerNumber = 0; //so that panel knows what table size stats to show
 		//this.activeStatsPanelIDs = [];
 		this.waitForGameToLoad();
 		this.builder = builder; //to pass seat number to
         this.tableDiv = document.body;
+		this.gameLoaded = false;
 	}
 	
 	initializeHUD(){
@@ -280,19 +281,17 @@ class HUD { //class for hud graphical overlay. gets made by
 		
 	}
 	
-	HUDloop(iteration){
-		
-		this.sleep(500).then(() => {
+	HUDloop(){
+		if(this.gameLoaded){
+			this.iteration ++;
 			if(this.settings.checkIfShowingHUD()){
 				this.initializeHUD();
 			}else{this.clearDisplay();}
-            if(iteration % 8 == 0){ //only request logs every 4 seconds
-                scraper.getLog();
-            }
+			if(this.iteration % 8 == 0){ //only request logs every 4 seconds
+				scraper.getLog();
+			}
 			getStats(this.aggregator); //every update of the HUD retrieve stats from memory and store them in the aggregator stats variable
-            this.HUDloop(iteration+1);
-		})
-		
+		}
 	}
 	
 	sleep(ms) { //https://www.sitepoint.com/delay-sleep-pause-wait/
@@ -327,7 +326,8 @@ class HUD { //class for hud graphical overlay. gets made by
         this.tableDiv = this.getTableDiv();
 		this.createHUDdiv();
         
-		this.HUDloop(0);
+		this.gameLoaded = true;
+		this.HUDloop();
 		//self.sleep(300).then(() => {this.initializeHUD();});//give a moment for players to fill
 		
 		return;
@@ -1239,6 +1239,11 @@ chrome.runtime.onMessage.addListener(
 		if(request.command == "cleared"){
 			console.log("cleared");
 			getStats(aggregator);
+			sendResponse({"confirmation": "success"});
+		}
+		if(request.command == "runHUD"){
+			console.log("running");
+			hud.HUDloop();
 			sendResponse({"confirmation": "success"});
 		}
 		/*if(request.command == "serverUpdate"){
