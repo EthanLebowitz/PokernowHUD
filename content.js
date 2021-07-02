@@ -331,6 +331,7 @@ class HUD { //class for hud graphical overlay. gets made by
 		this.createHUDdiv();
         
 		this.initializePotObserver();
+		scraper.getFullLog(); //gets last created_at
 		this.HUDloop(0);
 		//self.sleep(300).then(() => {this.initializeHUD();});//give a moment for players to fill
 		
@@ -1127,7 +1128,7 @@ class LogScraper{
     constructor(){
         this.lastHandNumber = 0;
 		this.lastCreatedAt = 0; //holds last created at number to reduce server load.
-		this.getFullLog(); //sets lastCreatedAt
+		//this.getFullLog(); //sets lastCreatedAt
     }
     
     removeChat(chatText){
