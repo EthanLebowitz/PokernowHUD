@@ -7,22 +7,6 @@
 */
 
 
-const targetNode = document.getElementById('chat');
-const config = { attributes: true, childList: true, subtree: true };
-
-
-/* function retrieve(key){
-	
-	var value = {};
-	chrome.storage.local.get([key], function(result) {
-		console.log('Value currently is ' + result.key);
-	});
-	if(value == null){value = {};}
-	return value;
-	
-} */
-
-
 class Player {
 	
 	constructor(username, x, y, height, fontSize, seat){
@@ -48,7 +32,7 @@ class Settings {
 		this.showingHUD = true;
 		this.panelOffset = this.getPanelOffset();
 		chrome.storage.local.get(['settings'], function(result) {
-			console.log('Value currently is ' + result.settings);
+			//console.log('Value currently is ' + result.settings);
 			//self.setStatsToShow(result.settings.stats);
 			self.statsToShow = result.settings.panelSettings;
 			//console.log(result.settings.stats);
@@ -219,7 +203,7 @@ class Panel { //gets made by HUD
 		var y = parseFloat(player.y.replace("px", ""));
         var yShift = 0.75*parseFloat(player.height.replace("px", ""));
 		yShift += this.getYOffset();
-		console.log(yShift);
+		//console.log(yShift);
 		var xShift = this.getXOffset();
 		
 		div.style.position = "absolute";
@@ -255,6 +239,25 @@ class HUD { //class for hud graphical overlay. gets made by
         this.tableDiv = document.body;
 	}
 	
+	initializePotObserver(){ //begin watching the pot size for new hands (when pot becomes 0.00 again)
+		//console.log("watch the pot");
+		
+		const targetNode = document.getElementsByClassName('table-pot-size')[0];
+		const config = { attributes: true, childList: true, subtree: true };
+		
+		const callback = function(mutationsList, observer) {
+			var potSize = Number(targetNode.innerText.split("\n")[0]);
+			var totalSize = Number(targetNode.innerText.split("\n\n")[1].replace("total ", ""));
+			if(potSize == 0 && totalSize != 0){ // != 0 because both being 0 only seems to happen after folds.
+				//console.log("it's a new hand!")
+				scraper.getLog();
+			}
+		};
+
+		const observer = new MutationObserver(callback);
+		observer.observe(targetNode, config);
+	}
+	
 	initializeHUD(){
 		
 		//console.log(settings.statsToShow);
@@ -286,9 +289,9 @@ class HUD { //class for hud graphical overlay. gets made by
 			if(this.settings.checkIfShowingHUD()){
 				this.initializeHUD();
 			}else{this.clearDisplay();}
-            if(iteration % 8 == 0){ //only request logs every 4 seconds
+            /* if(iteration % 8 == 0){ //only request logs every 4 seconds
                 scraper.getLog();
-            }
+            } */
 			getStats(this.aggregator); //every update of the HUD retrieve stats from memory and store them in the aggregator stats variable
             this.HUDloop(iteration+1);
 		})
@@ -302,7 +305,7 @@ class HUD { //class for hud graphical overlay. gets made by
 	async waitForPlayersToLoad(){
 		var self = this; //"this" is not available in the promise because async stuff runs in the context of the window
 		var loaded = await new Promise(function(resolve, reject){
-			console.log("checking");
+			//console.log("checking");
 			var youLoaded = false;
             var userDiv = document.getElementsByClassName("table-player-name")[0];
             if(! (userDiv == null)){youLoaded = true;}
@@ -315,7 +318,7 @@ class HUD { //class for hud graphical overlay. gets made by
 			}
 			if(youLoaded){resolve(true);}
 		})
-		console.log("loaded: "+String(loaded));
+		//console.log("loaded: "+String(loaded));
 		return loaded;
 	}
 	
@@ -327,6 +330,7 @@ class HUD { //class for hud graphical overlay. gets made by
         this.tableDiv = this.getTableDiv();
 		this.createHUDdiv();
         
+		this.initializePotObserver();
 		this.HUDloop(0);
 		//self.sleep(300).then(() => {this.initializeHUD();});//give a moment for players to fill
 		
@@ -421,7 +425,7 @@ class HandBuilder{ //gets called by execute()
 	constructor(aggregator, settings){
 		
 		this.aggregator = aggregator;
-		console.log(this.you);
+		//console.log(this.you);
 		this.currentHand = [""];
 		this.currentHandForLogging = [""]; //includes "revealed lines"
 		this.dealtLine = "";
@@ -469,17 +473,17 @@ class HandBuilder{ //gets called by execute()
 				//if(lineWords[0] === "you"){lastLine = lastLine.replace("you", this.you);} //translate you to username of user
 				//this.currentHandForLogging.push(lastLine);
 				if(lastLine.includes("timed out")){lastLine = lastLine.replace("timed out and ", "");} //removing "timed out and " leaves only the username and "folded". translates to a basic folded message
-				if(lastLine.includes("were dealt")){this.dealtLine = lastLine; console.log(lastLine);} //could be useful later
+				if(lastLine.includes("were dealt")){this.dealtLine = lastLine;} 
 				if(lastLine.includes("(") && !lastLine.includes("showed")){ //if there's a parenthasis and it wasn't from a showed statement
 					this.stackLines.push(lastLine);
-					console.log(this.stackLines);
+					//console.log(this.stackLines);
 				}
 				if(!lastLine.includes("came through") && !lastLine.includes("added on") && !lastLine.includes("were dealt") && !lastLine.includes("stood up") && !(lastLine.includes("(")  && (!lastLine.includes("showed")))){
 					if(!lastLine.includes("revealed")){
 						this.currentHand.push(lastLine);
 					}
 					this.currentHandForLogging.push(lastLine);
-					console.log(lastLine);
+					//console.log(lastLine);
 				}
 				previousLastLine = lastLine;
 			}
@@ -487,10 +491,10 @@ class HandBuilder{ //gets called by execute()
 		
 		this.currentHand[0] = this.stackLines.length.toString()+" players are in the hand";
 		this.currentHandForLogging[0] = this.stackLines.length.toString()+" players are in the hand";
-		console.log(this.currentHand);
+		//console.log(this.currentHand);
 		this.createHand(this.currentHand, this.dealtLine); //passes list of hand lines
 		if(this.recordingHands){
-			console.log("record");
+			//console.log("record");
 			this.updateHands(); // gets array of hands. again must be done every hand in case user is multitabling //storeHandHistory now gets called from inside updateHands to ensure correct function call order
 		}else{this.cleanup();}
 		this.currentHand = [""]; //reset log for a new hand
@@ -523,7 +527,7 @@ class HandBuilder{ //gets called by execute()
         
         var translatedHandLines = [];
         var dealer = "";
-        console.log(handLines);
+        //console.log(handLines);
         //var stackLines = [];
         
         for(var i=0; i<handLines.length; i++){
@@ -557,7 +561,7 @@ class HandBuilder{ //gets called by execute()
                     var stack = stackLine.split("(")[1].replace(")", "");
                     translatedStackLines.push(player+" ("+stack+", "+"[position]"+")");
                 }
-                    console.log(translatedStackLines);
+                //console.log(translatedStackLines);
                 if(! dealer === "dead button"){ //quick fix for infinite loop caused by dead button. Not sure yet if this will cause other problems. Will definitely mess up hand history for that hand.
                     while(! (translatedStackLines[translatedStackLines.length-1].split(" ")[0] === dealer)){ //if the last guy isn't the dealer shift until they are
                         //console.log(dealer);
@@ -657,8 +661,8 @@ class HandBuilder{ //gets called by execute()
                 break;
             }
 		}
-		console.log(handStart);
-		console.log(handEnd);
+		//console.log(handStart);
+		//console.log(handEnd);
         
         var handLines = [];
         
@@ -668,14 +672,14 @@ class HandBuilder{ //gets called by execute()
             handLines.push(message);
         }
         
-		console.log(handLines);
+		//console.log(handLines);
 		return handLines;
 		
 	}
     
     cleanup(){
         
-        console.log("cleanup");
+        //console.log("cleanup");
 		this.currentHandForLogging = [""]; //these must all be cleared after the history string is created
 		this.dealtLine = "";
 		this.stackLines = [];
@@ -696,7 +700,7 @@ class HandBuilder{ //gets called by execute()
             return;
         }else{this.sentHistorySizeAlert = false;}
 		
-		console.log("brapapa");
+		//console.log("brapapa");
 		try{
 			var logString = this.convertToPokerStarsFormat(this.currentHandForLogging, this.dealtLine, this.stackLines);
 		}catch{
@@ -705,7 +709,7 @@ class HandBuilder{ //gets called by execute()
 		}
         this.cleanup();
 		this.handNumber += 1;
-		console.log(logString);
+		//console.log(logString);
 		var self = this;
 		/* chrome.storage.local.get(['hands'], function(result) {
 			console.log('Value currently is ' + result.hands);
@@ -738,9 +742,9 @@ class HandBuilder{ //gets called by execute()
 	
 	convertToPokerStarsFormat(handLines, dealtLine, stackLines){
 		
-		console.log(handLines.slice());
-		console.log(dealtLine);
-		console.log(stackLines.slice());
+		//console.log(handLines.slice());
+		//console.log(dealtLine);
+		//console.log(stackLines.slice());
 		
 		var history = "";
 		
@@ -765,7 +769,7 @@ class HandBuilder{ //gets called by execute()
 		var tabTitle = document.getElementsByTagName('title')[0].innerHTML;
 		var tableName = tabTitle.slice(0,tabTitle.length-" - donkhouse.com".length);
 		var seatNumber = this.seatNumber;
-		console.log(seatNumber);
+		//console.log(seatNumber);
 		var buttonSeatNumber;
 		var buttonAbbrv = "BU)"; //parenthasis is included so that someone with BU in their name won't trigger a false positive
 		if(stackLines.length == 2){
@@ -1075,7 +1079,7 @@ class Aggregator{
 		this.stats["F2B"] = F2Bdata;
 		this.stats["F3B"] = F3Bdata;
 		
-		console.log(this.stats);
+		//console.log(this.stats);
 		
 	}
 	
@@ -1122,6 +1126,8 @@ class LogScraper{
     
     constructor(){
         this.lastHandNumber = 0;
+		this.lastCreatedAt = 0; //holds last created at number to reduce server load.
+		this.getFullLog(); //sets lastCreatedAt
     }
     
     removeChat(chatText){
@@ -1164,25 +1170,43 @@ class LogScraper{
         }else if(Object.prototype.toString.call(x) === "[object Object]"){ //it looks like for some people the log might get returned as an object and not a string.
             var jsonLog = text;
         }
-        
-        for(var i = 10; i >= 0; i--){ //we can probably drop the starting value of i way down
+		
+		var searchDepth = 10;
+		if(jsonLog.logs.length <= searchDepth){searchDepth = jsonLog.logs.length-1;}
+		
+        for(var i = searchDepth; i >= 0; i--){ //we can probably drop the starting value of i way down
             var message = jsonLog.logs[i].msg;
             //console.log(message);
             if(message.includes("ending hand #")){ //if a hand is ending
+				self.lastCreatedAt = jsonLog.logs[i].created_at;
                 var number = message.split("#")[1].split(" ")[0];
                 if(number > self.lastHandNumber){ //if it's a new hand that we haven't seen before
                     self.lastHandNumber = number;
-                    console.log(self.lastHandNumber);
+                    //console.log(self.lastHandNumber);
                     builder.addHand(jsonLog);
                 }
             }
         }
     }
-
+	
+	setInitialCreatedAt(text, self){
+        if(Object.prototype.toString.call(text) === "[object String]"){
+            var jsonLog = JSON.parse(text);
+        }else if(Object.prototype.toString.call(x) === "[object Object]"){ //it looks like for some people the log might get returned as an object and not a string.
+            var jsonLog = text;
+        }
+		self.lastCreatedAt = jsonLog.logs[0].created_at;
+	}
+	
+	getFullLog(){
+        var currentURL = window.location.href;
+        this.httpGetAsync(window.location.href+"/log", this.setInitialCreatedAt);
+	}
+	
     getLog(){
         builder.recordingHands = settings.checkIfRecordingHands();
         var currentURL = window.location.href;
-        this.httpGetAsync(window.location.href+"/log", this.processLog);
+        this.httpGetAsync(window.location.href+"/log?after_at="+this.lastCreatedAt, this.processLog);
     }
     
 }

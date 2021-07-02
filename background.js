@@ -125,7 +125,7 @@ chrome.runtime.onMessage.addListener(
 		}
         if(request.command == "AlertHandHistorySize"){
 			
-            alert("The size of your hand history file has exceeded it's maximum (2000 hands). In order to keep recording hands copy it's contents somewhere and click \"Clear History\".");
+            alert("The size of your hand history file has exceeded it's maximum (2000 hands). In order to keep recording hands copy it's contents somewhere and click \"Clear History\". You can ignore this message and stats will continue to update normally.");
 			sendResponse({"confirmation": "success"});
 		}
 		if(request.command == "requestServerAnalysis"){ //all serverside code has been moved to the background script.
