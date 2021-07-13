@@ -247,7 +247,13 @@ class HUD { //class for hud graphical overlay. gets made by
 		
 		const callback = function(mutationsList, observer) {
 			var potSize = Number(targetNode.innerText.split("\n")[0]);
-			var totalSize = Number(targetNode.innerText.split("\n\n")[1].replace("total ", ""));
+			
+			var totalSize = targetNode.innerText.split("\n\n")[1];
+			if(totalSize != undefined){
+				totalSize = Number(totalSize.replace("total ", ""));
+			} else {
+				totalSize = 1;
+			}
 			if(potSize == 0 && totalSize != 0){ // != 0 because both being 0 only seems to happen after folds.
 				//console.log("it's a new hand!")
 				scraper.getLog();
@@ -625,7 +631,7 @@ class HandBuilder{ //gets called by execute()
             
         }
         
-        //console.log(translatedHandLines);
+        console.log(translatedHandLines);
         return translatedHandLines;
         
     }
@@ -673,7 +679,7 @@ class HandBuilder{ //gets called by execute()
             handLines.push(message);
         }
         
-		//console.log(handLines);
+		console.log(handLines);
 		return handLines;
 		
 	}
