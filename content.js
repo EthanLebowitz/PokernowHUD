@@ -499,6 +499,7 @@ class HandBuilder{ //gets called by execute()
 		this.currentHand[0] = this.stackLines.length.toString()+" players are in the hand";
 		this.currentHandForLogging[0] = this.stackLines.length.toString()+" players are in the hand";
 		//console.log(this.currentHand);
+		//console.log(this.stackLines);
 		this.createHand(this.currentHand, this.dealtLine); //passes list of hand lines
 		if(this.recordingHands){
 			//console.log("record");
@@ -518,13 +519,14 @@ class HandBuilder{ //gets called by execute()
         return positionName;
 	}
     
-    removeNameSpaces(line){
+    removeNameSpecialCharacters(line){
         if(line.includes("@")){ //&& (line.split(" ").length - line.split(" ").findIndex(word => word === "@")) > 2){ //if the player name is at the beginning and not at the end
             var player = line.split("\"")[1].split("@")[0];
             player = player.substring(0,player.length-1);//cut off trailing space
             //console.log(player);
             var spacelessPlayer = player.replaceAll(" ", "__"); //two underscores.
-            line = line.replace(player, spacelessPlayer); //this is to deal with players with spaces in there names
+			var parenthasislessPlayer = spacelessPlayer.replaceAll("(", "--").replaceAll(")", "--");
+            line = line.replace(player, parenthasislessPlayer); //this is to deal with players with spaces in there names
             //console.log(player);
         }
         return line;
@@ -541,7 +543,7 @@ class HandBuilder{ //gets called by execute()
             
             var line = handLines[i];
             
-            line = this.removeNameSpaces(line);
+            line = this.removeNameSpecialCharacters(line);
             var player = line.split(" ")[0].split("\"")[1];
             
             if(line.includes("starting hand")){
@@ -563,7 +565,7 @@ class HandBuilder{ //gets called by execute()
                 var translatedStackLines = [];
                 for(var j=0; j<stackLines.length; j++){
                     var stackLine = stackLines[j];
-                    stackLine = this.removeNameSpaces(stackLine);
+                    stackLine = this.removeNameSpecialCharacters(stackLine);
                     player = stackLine.split(" ")[1].split("\"")[1];
                     var stack = stackLine.split("(")[1].replace(")", "");
                     translatedStackLines.push(player+" ("+stack+", "+"[position]"+")");
@@ -631,7 +633,7 @@ class HandBuilder{ //gets called by execute()
             
         }
         
-        console.log(translatedHandLines);
+        //console.log(translatedHandLines);
         return translatedHandLines;
         
     }
@@ -679,7 +681,7 @@ class HandBuilder{ //gets called by execute()
             handLines.push(message);
         }
         
-		console.log(handLines);
+		//console.log(handLines);
 		return handLines;
 		
 	}

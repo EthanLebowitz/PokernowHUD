@@ -176,11 +176,8 @@ class Hand { //hand class
 	
 	constructor(handLines){
 		this.handLines = handLines;
-		console.log(handLines)
         this.playerNumber = this.getPlayerNumber(this.handLines); //number of players
-		console.log(this.playerNumber)
         this.players = this.getPlayers(this.handLines, this.playerNumber); //list of players. index is position.
-		console.log(this.players)
 		this.wasFlop = this.checkFlop(handLines);
 		this.streetLines = this.chopStreets(handLines);
 		this.postflopLines = this.extractPostflopLines(handLines);
