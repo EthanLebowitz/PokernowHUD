@@ -242,7 +242,8 @@ class HUD { //class for hud graphical overlay. gets made by
 	initializePotObserver(){ //begin watching the pot size for new hands (when pot becomes 0.00 again)
 		//console.log("watch the pot");
 		
-		const targetNode = document.getElementsByClassName('table-pot-size')[0];
+		//const targetNode = document.getElementsByClassName('table-pot-size')[0];
+		const targetNode = document.getElementsByClassName('dealer-button-ctn')[0];
 		const config = { attributes: true, childList: true, subtree: true };
 		
 		const callback = function(mutationsList, observer) {
