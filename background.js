@@ -27,6 +27,13 @@ chrome.runtime.onInstalled.addListener(function() {
 			}); 
 		}
     });
+	chrome.storage.local.get(["donateBtnClicked"], function(result) {
+		if(result["donateBtnClicked"]==null){
+			chrome.storage.local.set({"donateBtnClicked": false}, function() {
+				console.log("created donate button clicked variable");
+			}); 
+		}
+    });
 	chrome.storage.local.set({"settings": {"panelSettings":[["nH", "nVPIP", "nPFR", "nAF"],[],[],["lCB", "l2B", "l3Ba", "l3B", "l4B", "lFC", "lF2B", "lF3B", "lF3", "lWTSD"]], "recordBox": true, "showingHUD": true, "panelOffset":[0,0]}}, function() { //initialize settings storage
 		console.log("created stats dict");
     });
@@ -168,13 +175,24 @@ function popup(mylink, windowname) {
 	return false; 
 }
 
+function popupIfDonateUnclicked(){
+	chrome.storage.local.get(["donateBtnClicked"], function(result) {
+		console.log(result.donateBtnClicked);
+		var clicked = result.donateBtnClicked;
+		if(!clicked){
+			popup("donatePopup.html", "test");
+		}
+	});
+}
+
 function incrementHandCount(){
 	chrome.storage.local.get(["handCount"], function(result) {
 		chrome.storage.local.set({"handCount":result["handCount"]+1}, function() { //initialize settings storage
 			console.log("incremented hand count");
 		});
-		if(result.handCount == 500){
-			popup("donatePopup.html", "test");
+		var handCount = result.handCount+1
+		if(handCount == 1000 || handCount == 3000 || handCount == 10000 || handCount == 20000 || handCount == 50000 || handCount == 100000){
+			popupIfDonateUnclicked();
 		}
 	});
 }
