@@ -192,7 +192,7 @@ function incrementHandCount(){
 		});
 		var handCount = result.handCount+1
 		if(handCount == 1000 || handCount == 3000 || handCount == 10000 || handCount == 20000 || handCount == 50000 || handCount == 100000){
-			popupIfDonateUnclicked();
+			popupIfDonateUnclicked(); //popup if donate button has not been clicked in the past
 		}
 	});
 }
