@@ -158,12 +158,24 @@ chrome.runtime.onMessage.addListener(
 	}
 );
 
+//https://html.com/javascript/popup-windows
+function popup(mylink, windowname) { 
+	if (! window.focus)return true; 
+	var href; 
+	if (typeof(mylink) == 'string') href=mylink; 
+	else href=mylink.href; 
+	window.open(href, windowname, 'width=400,height=200,scrollbars=yes'); 
+	return false; 
+}
+
 function incrementHandCount(){
 	chrome.storage.local.get(["handCount"], function(result) {
 		chrome.storage.local.set({"handCount":result["handCount"]+1}, function() { //initialize settings storage
 			console.log("incremented hand count");
 		});
-		alert(result.handCount);
+		if(result.handCount == 500){
+			popup("donatePopup.html", "test");
+		}
 	});
 }
 
