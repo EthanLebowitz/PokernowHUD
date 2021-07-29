@@ -20,6 +20,13 @@ chrome.runtime.onInstalled.addListener(function() {
 			}); 
 		}
     }); 	
+	chrome.storage.local.get(["handCount"], function(result) {
+		if(result["handCount"]==null){
+			chrome.storage.local.set({"handCount": 0}, function() {
+				console.log("created hand count variable");
+			}); 
+		}
+    });
 	chrome.storage.local.set({"settings": {"panelSettings":[["nH", "nVPIP", "nPFR", "nAF"],[],[],["lCB", "l2B", "l3Ba", "l3B", "l4B", "lFC", "lF2B", "lF3B", "lF3", "lWTSD"]], "recordBox": true, "showingHUD": true, "panelOffset":[0,0]}}, function() { //initialize settings storage
 		console.log("created stats dict");
     });
@@ -142,6 +149,7 @@ chrome.runtime.onMessage.addListener(
 				console.log("updated stats with new stats");
 			});
 			sendResponse({"confirmation": "success"});
+			incrementHandCount();
 		}
 		/* if(request.command == "getSettings"){
 			sendResponse({"stats":checked});
@@ -149,6 +157,15 @@ chrome.runtime.onMessage.addListener(
 		console.log(request.command);
 	}
 );
+
+function incrementHandCount(){
+	chrome.storage.local.get(["handCount"], function(result) {
+		chrome.storage.local.set({"handCount":result["handCount"]+1}, function() { //initialize settings storage
+			console.log("incremented hand count");
+		});
+		alert(result.handCount);
+	});
+}
 
 function download(filename, text) { //for backup from https://ourcodeworld.com/articles/read/189/how-to-create-a-file-and-generate-a-download-with-javascript-in-the-browser-without-a-server
   var element = document.createElement('a');
