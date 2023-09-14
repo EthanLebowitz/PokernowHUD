@@ -111,6 +111,7 @@ class Panel { //gets made by HUD
 	addStatText(player, div){
 		
 		var stats = this.aggregator.stats;
+		//console.log(stats);
 		var lines = this.settings.statsToShow;
 		//if(statsToDisplay == null){statsToDisplay = ["VPIP", "PFR", "AF"]}
 		var tableSize = this.aggregator.handed(this.playerNumber);
@@ -400,7 +401,7 @@ class HUD { //class for hud graphical overlay. gets made by
         for(var i=0; i<playerDivs.length; i++){
             var currentPlayer = playerDivs[i];
             if( ! currentPlayer.classList.contains("table-player-seat") ){
-                var nameDiv = currentPlayer.getElementsByClassName("table-player-name")[0];
+                var nameDiv = currentPlayer.getElementsByClassName("table-player-name")[0].children[0];
                 var name = nameDiv.innerHTML.replaceAll(" ", "__");
                 var styles = window.getComputedStyle(playerDivs[i]);
                 var x = styles.getPropertyValue("left");
@@ -716,7 +717,7 @@ class HandBuilder{ //gets called by execute()
 		}); */
 		this.hands.push(logString);
 		chrome.storage.local.set({"hands": self.hands}, function() {
-			console.log("updated hands");
+			console.log("updated hands!");
 		});
 		/* console.log(this.handNumber);
 		chrome.storage.local.set({"handNumber": self.handNumber}, function() {	
