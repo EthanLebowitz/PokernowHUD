@@ -1,13 +1,11 @@
 {
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"name": "Pokernow HUD",
-	"version": "0.9.16",
-	"permissions": ["storage"],
-	"content_security_policy": "default-src 'self'",
+	"version": "10.0",
+	"permissions": ["storage", "notifications"],
 	"background": {
-        "scripts": ["background.js"],
-        "persistent": false
-    },
+	  "service_worker": "serviceWorker.js"
+	},
 	
 	"icons": { "16": "images/icon16.png",
            "48": "images/icon48.png",
@@ -19,8 +17,13 @@
 			"js": ["thirdParty/jquery.min.js", "content.js"]
 		}
 	],
-	
-	"browser_action": {
+	"action": {
 		"default_popup": "popup.html"
-	}
+	},
+	"web_accessible_resources": [
+		{
+		  "resources": [ "donatePopup.html" ],
+		  "matches": [ "https://www.pokernow.club/*" ]
+		}
+	  ]
 }

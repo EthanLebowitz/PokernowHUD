@@ -691,9 +691,7 @@ class HandBuilder{ //gets called by execute()
         if(this.hands.length >= 2000){
             var haveAlerted = this.sentHistorySizeAlert;
             if(!haveAlerted){
-                chrome.runtime.sendMessage({"command": "AlertHandHistorySize"}, function(response) {
-                    console.log(response.confirmation);
-                });
+				alert("The size of your hand history file has exceeded it's maximum (2000 hands). In order to keep recording hands copy it's contents somewhere and click \"Clear History\". You can ignore this message and stats will continue to update normally.");
                 this.sentHistorySizeAlert = true;
             }
             this.cleanup();
@@ -1236,6 +1234,14 @@ getStats(aggregator); //gets stats from memory
 
 var settings = new Settings();
 
+//https://html.com/javascript/popup-windows
+function popup(mylink, windowname) { 
+	if (! window.focus)return true; 
+	let popupURL = chrome.runtime.getURL(mylink)
+	window.open(popupURL, windowname, 'width=400,height=200,scrollbars=yes'); 
+	return false; 
+}
+
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		if (request.command == "updateStats2"){ //updateStats2 is from background.js to content.js wheras updateStats is from popup.js to background.js
@@ -1261,8 +1267,31 @@ chrome.runtime.onMessage.addListener(
 			sendResponse({"confirmation": "success"});
 		}
 		if(request.command == "cleared"){
-			console.log("cleared");
-			getStats(aggregator);
+			var confirm = window.confirm("Are you sure you want to clear your data? Without a backup it will not be recoverable.");
+			if(confirm == true){
+				chrome.storage.local.set({'stats':{}}, function(data) {
+					console.log("success");
+				});
+				
+				console.log("cleared");
+				getStats(aggregator);
+				sendResponse({"confirmation": "success"});
+			}
+		}
+		if(request.command == "popupDonation"){
+			popup("donatePopup.html", "test")
+			sendResponse({"confirmation": "success"});
+		}
+		if(request.command == "clearedHistory"){
+			var confirm = window.confirm("Are you sure you want to clear your hand history? It will not be recoverable.");
+			if(confirm == true){
+				/* chrome.storage.local.set({'handNumber':0}, function(data) { 
+					console.log("success");
+				}); */
+				chrome.storage.local.set({'hands':[]}, function(data) { 
+					console.log("success");
+				});
+			}
 			sendResponse({"confirmation": "success"});
 		}
 		/*if(request.command == "serverUpdate"){

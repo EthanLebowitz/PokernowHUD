@@ -111,41 +111,7 @@ chrome.runtime.onMessage.addListener(
 			});
 			sendResponse({"confirmation": "success"});
 		}
-		if(request.command == "cleared"){
-			var confirm = window.confirm("Are you sure you want to clear your data? Without a backup it will not be recoverable.");
-			if(confirm == true){
-				chrome.storage.local.set({'stats':{}}, function(data) {
-					console.log("success");
-				});
-				chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-					chrome.tabs.sendMessage(tabs[0].id, {"command": "cleared"}, function(response) {// doesn't tell content.js to get stats from memory, rather tells content.js to set aggregator.stats to data messaged
-						console.log(response.confirmation);
-					});
-				});
-			}
-			sendResponse({"confirmation": "success"});
-		}
-		if(request.command == "clearedHistory"){
-			var confirm = window.confirm("Are you sure you want to clear your hand history? It will not be recoverable.");
-			if(confirm == true){
-				/* chrome.storage.local.set({'handNumber':0}, function(data) { 
-					console.log("success");
-				}); */
-				chrome.storage.local.set({'hands':[]}, function(data) { 
-					console.log("success");
-				});
-			}
-			sendResponse({"confirmation": "success"});
-		}
-        if(request.command == "AlertHandHistorySize"){
-			
-            alert("The size of your hand history file has exceeded it's maximum (2000 hands). In order to keep recording hands copy it's contents somewhere and click \"Clear History\". You can ignore this message and stats will continue to update normally.");
-			sendResponse({"confirmation": "success"});
-		}
 		if(request.command == "requestServerAnalysis"){ //all serverside code has been moved to the background script.
-			//var xhttp = new XMLHttpRequest();
-			//xhttp.open("POST", "https://g112z5acnj.execute-api.us-east-1.amazonaws.com/default/dhudServerside", true);
-			//xhttp.setRequestHeader("Content-type", "application/json");
 			var handLines = request.handLines;
 			var stats = request.stats;
             console.log(stats);
@@ -165,22 +131,16 @@ chrome.runtime.onMessage.addListener(
 	}
 );
 
-//https://html.com/javascript/popup-windows
-function popup(mylink, windowname) { 
-	if (! window.focus)return true; 
-	var href; 
-	if (typeof(mylink) == 'string') href=mylink; 
-	else href=mylink.href; 
-	window.open(href, windowname, 'width=400,height=200,scrollbars=yes'); 
-	return false; 
-}
-
 function popupIfDonateUnclicked(){
 	chrome.storage.local.get(["donateBtnClicked"], function(result) {
 		console.log(result.donateBtnClicked);
 		var clicked = result.donateBtnClicked;
 		if(!clicked){
-			popup("donatePopup.html", "test");
+			chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+				chrome.tabs.sendMessage(tabs[0].id, {"command": "popupDonation"}, function(response) {
+					console.log(response.confirmation);
+				});
+			});
 		}
 	});
 }

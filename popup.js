@@ -449,16 +449,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function clearStats(){
 	console.log("clear stats");
-	chrome.runtime.sendMessage({"command": "cleared"}, function(response) {
-		console.log(response.confirmation);
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+		chrome.tabs.sendMessage(tabs[0].id, {"command": "cleared"}, function(response) {// doesn't tell content.js to get stats from memory, rather tells content.js to set aggregator.stats to data messaged
+			console.log(response.confirmation);
+		});
 	});
 }
 
 function clearHistory(){
 	
 	console.log("clear history");
-	chrome.runtime.sendMessage({"command": "clearedHistory"}, function(response) {
-		console.log(response.confirmation);
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+		chrome.tabs.sendMessage(tabs[0].id, {"command": "clearedHistory"}, function(response) {
+			console.log(response.confirmation);
+		});
 	});
 	
 }
