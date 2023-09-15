@@ -2,7 +2,7 @@
 	"manifest_version": 3,
 	"name": "Pokernow HUD",
 	"version": "10.0",
-	"permissions": ["storage", "notifications"],
+	"permissions": ["storage"],
 	"background": {
 	  "service_worker": "serviceWorker.js"
 	},
